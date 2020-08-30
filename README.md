@@ -1,9 +1,8 @@
-# Tight-Forests-And-The-Chromatic-Polynomial
+# Tight Forests And The Chromatic Polynomial
 
 ## Authors  
 Student Researcher: Miliano Mikol  
 Advisor: Dr. Joshua Hallam, Professor of Mathematics 
-
 
 ## Description   
 A combinatorial research project seeking to characterize a generally unknown class of graphs.
