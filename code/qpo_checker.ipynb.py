@@ -1,6 +1,14 @@
 from sage.graphs.connectivity import connected_components_subgraphs
 from datetime import datetime
 
+'''
+get_candidate_paths()
+- 
+
+minor performance improvements:
+- avoiding loop if vertices are the same; prevents overhead of calling all_paths()
+- checking reversed paths + window sliding; saves a DFS for each pair from calling all_paths() [O(v) < O(v + e)]
+'''
 def get_candidate_paths(G):
     candidate_paths = set([])
     
@@ -18,6 +26,15 @@ def get_candidate_paths(G):
             
     return candidate_paths
 
+'''
+is_candidate_path()
+- time complexity: O( v ); optimal
+
+minor performance improvements:
+- short-circuit if path length less than 4; avoids loop over entire path length
+- short-circuit if first three vertices fail; avoids loop over entire path length
+- starting loop at fourth vertex; avoids loop over entire path length
+'''
 def is_candidate_path(P):
     min_len = 4
 
@@ -36,6 +53,10 @@ def is_candidate_path(P):
 
     return False
 
+'''
+has_QPO()
+- time complexity: O( v^2 * v! + |cp| * v ) = O( v^2 * v! )
+'''
 def has_QPO(G, show_checks = False):
     candidate_paths = get_candidate_paths(G)
 
@@ -56,10 +77,18 @@ def has_QPO(G, show_checks = False):
 
     return True
 
+'''
+get_labeling_permutation_patterns()
+- time complexity: O( v! )
+'''
 def get_labeling_permutation_patterns(order):
     labels = [i + 1 for i in range(order)]
     return Arrangements(labels, order).list()
 
+'''
+single_graph_QPO_check()
+- time complexity: O( v^2 * v! * v ) = O( v^3 * v! )
+'''
 def QPO_check(G, show_checks = False):
     print('checking this graph: ')
     G.show()
@@ -71,6 +100,13 @@ def QPO_check(G, show_checks = False):
 
     return (f'has QPO: {False}')
 
+'''
+QPO_check_all_labelings()
+- time complexity: O( v * v! )
+
+problem:
+- for cycles, it will over-compute by a factor of the cycle's order (since isomorphic)
+'''
 def QPO_check_all_labelings(G,
                             stop_at_QPO = False,
                             show_checks = False,
