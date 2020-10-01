@@ -1,42 +1,40 @@
 import sage.all
 from sage.combinat.permutation import Arrangements
-from sage.graphs.graph import Graph
 from datetime import datetime
+from itertools import combinations
+
+def path_traversals(G):
+    for c in combinations(G.vertices(), 2):
+        for p in G.all_paths(*c):
+            yield (p, list(reversed(p)))
+    return 
 
 def get_candidate_paths(G):
-    candidate_paths = set([])
+    candidate_paths = set()
     
-    def check_and_add(p):
-        if (is_candidate_path(p)):
-            candidate_paths.add(tuple(p))
-        return
-    
-    for i in range(1, G.order()):
-        for j in range(i + 1, G.order() + 1):
-            for p in G.all_paths(i, j):
-                check_and_add(p)
-                p.reverse()
-                check_and_add(p)
+    for fwd, rvr in path_traversals(G):
+        if is_candidate_path(fwd):
+            candidate_paths.add(tuple(fwd))
+        if is_candidate_path(rvr):
+            candidate_paths.add(tuple(rvr))
             
     return candidate_paths
 
 def is_candidate_path(P):
-    min_len = 4
+    MIN_LEN = 4
 
-    if (len(P) < min_len):
+    if (len(P) < MIN_LEN):
         return False
 
-    a, c = P[0], P[1]
-    b, d = P[2], P[len(P) - 1]
+    a, c, b, d = [*P[:3], P[len(P) - 1]]
 
-    if a < b and b < c and P[len(P) - 1] < c:
-        for i in range(min_len, len(P)):
-            if (P[i - 1] < c):
-                return False
-
-        return True
-
-    return False
+    if not (a < b and b < c and d < c):
+        return False
+    
+    if any(v_i < c for v_i in P[MIN_LEN:]):
+        return False
+            
+    return True
 
 def has_QPO(G, show_checks = False):
     candidate_paths = get_candidate_paths(G)
@@ -60,7 +58,7 @@ def has_QPO(G, show_checks = False):
 
 def get_labeling_permutation_patterns(order):
     labels = [i + 1 for i in range(order)]
-    return Arrangements(labels, order).list()
+    return list(Arrangements(labels, order))
 
 def QPO_check(G, show_checks = False):
     print('checking this graph: ')
