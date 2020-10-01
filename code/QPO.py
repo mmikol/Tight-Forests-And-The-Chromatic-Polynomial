@@ -1,4 +1,6 @@
-from sage.graphs.connectivity import connected_components_subgraphs
+import sage.all
+from sage.combinat.permutation import Arrangements
+from sage.graphs.graph import Graph
 from datetime import datetime
 
 def get_candidate_paths(G):
@@ -48,11 +50,11 @@ def has_QPO(G, show_checks = False):
         a, c = cp[0], cp[1]
         b, d = cp[2], cp[len(cp) - 1]
 
-    if not G.has_edge(a, d) and not (d < b and G.has_edge(c, d)):
-        if show_checks:
-            print('THIS IS NOT A QPO!')
-            print(f'failed path: {cp}\n')
-            return False
+        if not G.has_edge(a, d) and not (d < b and G.has_edge(c, d)):
+            if show_checks:
+                print('THIS IS NOT A QPO!')
+                print(f'failed path: {cp}\n')
+                return False
 
     return True
 
@@ -71,11 +73,11 @@ def QPO_check(G, show_checks = False):
 
     return (f'has QPO: {False}')
 
-def QPO_check_all_labelings(G,
-                            stop_at_QPO = False,
-                            show_checks = False,
-                            show_QPOs = False,
-                            count_QPOs = False):
+def find_QPO(G, 
+             stop_at_QPO = False, 
+             show_checks = False, 
+             show_QPOs = False, 
+             count_QPOs = False):
 
     start_time = datetime.now()
 
