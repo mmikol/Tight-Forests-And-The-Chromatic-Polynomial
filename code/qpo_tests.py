@@ -45,17 +45,28 @@ class CandidatePathGeneratorTests(unittest.TestCase):
         self.assertTrue(not list(c_paths))
 
     def test_candidate_path_generator_4(self):
-        POSSIBLE_CANDIDATE_PATHS = [1, 4, 3, 2], [2, 4, 3, 1], [1, 4, 2, 3]
-        vertices = [i + 1 for i in range(4)]
-        for [a, b, c, d] in Arrangements(vertices, len(vertices)):
-            c_paths = generate_candidate_paths(Graph({a: [b], b: [c], c: [d]}))
-            if list(c_paths):
-                self.assertTrue(
-                    all(p not in POSSIBLE_CANDIDATE_PATHS for p in c_paths))
+        c_paths = generate_candidate_paths(Graph({1: [2], 2: [3]}))
+        self.assertTrue(not list(c_paths))
 
     def test_candidate_path_generator_5(self):
-      # Test cycle graph
-      # Test bipartite graph
+        POSSIBLE_CANDIDATE_PATHS = {(1, 4, 3, 2), (2, 4, 3, 1), (1, 4, 2, 3)}
+        vertices = [i + 1 for i in range(4)]
+
+        for a, b, c, d in Arrangements(vertices, len(vertices)):
+            test = Graph({a: [b], b: [c], c: [d]})
+            candidate_paths = generate_candidate_paths(test)
+            if list(candidate_paths):
+                self.assertTrue(all(p not in POSSIBLE_CANDIDATE_PATHS
+                                    for p in candidate_paths))
+
+    def test_candidate_path_generator_6(self):
+        candidate_paths = generate_candidate_paths(
+            Graph({1: [2, 3], 2: [3], 3: [4]}))
+        return
+        # Test cycle graph
+        # Test bipartite graph
 
         # CompleteGraph(15)
+
+
 unittest.main(argv=[''], verbosity=2, exit=False)
