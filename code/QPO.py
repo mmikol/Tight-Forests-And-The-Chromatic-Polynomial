@@ -26,7 +26,7 @@ def is_candidate_path(P):
     if (len(P) < MIN_LEN):
         return False
 
-    a, c, b, d = [*P[:3], P[len(P) - 1]]
+    a, c, b, d = *P[:3], P[len(P) - 1]
 
     if not (a < b and b < c and d < c):
         return False
