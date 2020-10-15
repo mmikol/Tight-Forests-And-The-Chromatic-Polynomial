@@ -22,15 +22,21 @@ def generate_candidate_paths(G):
 def is_candidate_path(P):
     MIN_LEN = 4
 
-    if (len(P) < MIN_LEN):
+    if len(P) < MIN_LEN:
         return False
 
     a, c, b, d = *P[:3], P[-1]
 
-    if not (a < b and b < c and d < c):
+    if len(P) == MIN_LEN and not (d < c):
         return False
 
-    if any(v_i < c for v_i in P[MIN_LEN:]):
+    if not (a < b and b < c):
+        return False
+
+    if any(v_i < c for v_i in P[MIN_LEN:len(P)]):
+        return False
+
+    if not (d < c):
         return False
 
     return True
