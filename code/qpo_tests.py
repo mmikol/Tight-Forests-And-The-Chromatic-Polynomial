@@ -40,7 +40,25 @@ class PathTraversalGeneratorTests(unittest.TestCase):
         return
 
 
-class CandidatePathGeneratorTests(unittest.TestCase):
+class CandidatePathCheckerTests(unittest.TestCase):
+    def test_is_candidate_path_1(self):
+        self.assertFalse(is_candidate_path((1,)))
+        self.assertFalse(is_candidate_path((1, 2)))
+        self.assertFalse(is_candidate_path((1, 2, 3)))
+
+    def test_is_candidate_path_2(self):
+        POSSIBLE_CANDIDATE_PATHS = {(1, 4, 3, 2), (1, 4, 2, 3), (2, 4, 3, 1)}
+        vertices = [i + 1 for i in range(4)]
+        for a, b, c, d in Arrangements(vertices, len(vertices)):
+            cp = a, b, c, d
+            self.assertTrue(is_candidate_path(cp) ==
+                            (cp in POSSIBLE_CANDIDATE_PATHS))
+
+    def test_is_candidate_path_3(self):
+      # test all permutations of length  5
+
+
+"""class CandidatePathGeneratorTests(unittest.TestCase):
     def test_candidate_path_generator_1(self):
         specimen = Graph()
         candidate_paths = generate_candidate_paths(specimen)
@@ -95,6 +113,6 @@ class CandidatePathGeneratorTests(unittest.TestCase):
         self.assertTrue(
             all(p in candidate_paths for p in POSSIBLE_CANDIDATE_PATHS))
         return
-
+"""
 
 unittest.main(argv=[''], verbosity=2, exit=False)
