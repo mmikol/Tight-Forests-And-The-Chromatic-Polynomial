@@ -3,18 +3,21 @@ from itertools import combinations
 from sage.combinat.permutation import Arrangements
 from datetime import datetime
 
-def path_traversals(G):
+
+def generate_path_traversals(G):
     for c in combinations(G.vertices(), 2):
         for p in G.all_paths(*c):
-            yield p
-            yield [*reversed(p)]
-    return 
+            yield tuple(p)
+            yield tuple(reversed(p))
+    return
 
-def get_candidate_paths(G):
-    for p in path_traversals(G):
+
+def generate_candidate_paths(G):
+    for p in generate_path_traversals(G):
         if is_candidate_path(p):
             yield tuple(p)
     return
+
 
 def is_candidate_path(P):
     MIN_LEN = 4
@@ -26,18 +29,19 @@ def is_candidate_path(P):
 
     if not (a < b and b < c and d < c):
         return False
-    
+
     if any(v_i < c for v_i in P[MIN_LEN:]):
         return False
-            
+
     return True
 
-def has_QPO(G, show_checks = False):
+
+def has_QPO(G, show_checks=False):
     if show_checks:
         print('--new graph--')
         G.show()
 
-    for cp in get_candidate_paths(G):
+    for cp in generate_candidate_paths(G):
         a, c, b, d = *cp[:3], cp[-1]
 
         if (not G.has_edge(a, d) and not (d < b and G.has_edge(c, d))):
@@ -47,13 +51,15 @@ def has_QPO(G, show_checks = False):
 
     return True
 
+
 def get_label_permutations(order):
     labels = [i + 1 for i in range(order)]
     for a in Arrangements(labels, order):
         yield a
     return
-        
-def QPO_check(G, show_checks = False):
+
+
+def QPO_check(G, show_checks=False):
     print('checking this labeling: ')
     G.show()
 
@@ -64,18 +70,19 @@ def QPO_check(G, show_checks = False):
 
     return (f'has QPO: {False}')
 
-def find_QPO(G, 
-             stop_at_QPO = False, 
-             show_checks = False, 
-             show_QPOs = False, 
-             count_QPOs = False):
+
+def find_QPO(G,
+             stop_at_QPO=False,
+             show_checks=False,
+             show_QPOs=False,
+             count_QPOs=False):
 
     start_time = datetime.now()
 
     print(f'start time: {start_time}')
     print('checking a graph like this: ')
     G.show()
-    
+
     QPO_count = 0
     QPO_found = False
 
