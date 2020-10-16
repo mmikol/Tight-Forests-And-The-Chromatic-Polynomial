@@ -2,6 +2,7 @@ import unittest
 import sage.all
 from sage.graphs.graph import Graph
 from sage.combinat.permutation import Arrangements
+from sage.combinat.combination import Combinations
 from qpo import *
 
 
@@ -45,17 +46,37 @@ class CandidatePathCheckerTests(unittest.TestCase):
         self.assertFalse(is_candidate_path((1,)))
         self.assertFalse(is_candidate_path((1, 2)))
         self.assertFalse(is_candidate_path((1, 2, 3)))
+        return
 
     def test_is_candidate_path_2(self):
         POSSIBLE_CANDIDATE_PATHS = {(1, 4, 3, 2), (1, 4, 2, 3), (2, 4, 3, 1)}
         vertices = [i + 1 for i in range(4)]
-        for a, b, c, d in Arrangements(vertices, len(vertices)):
-            cp = a, b, c, d
+        for cp in Arrangements(vertices, len(vertices)):
             self.assertTrue(is_candidate_path(cp) ==
                             (cp in POSSIBLE_CANDIDATE_PATHS))
+        return
 
     def test_is_candidate_path_3(self):
-      # test all permutations of length  5
+        POSSIBLE_CANDIDATE_PATHS = {
+            (1, 4, 2, 3), (1, 4, 3, 2), (1, 5, 2, 3),
+            (1, 5, 2, 4), (1, 5, 3, 2), (1, 5, 3, 4),
+            (1, 5, 4, 2), (1, 5, 4, 3), (2, 4, 3, 1),
+            (2, 5, 1, 3), (2, 5, 1, 4), (2, 5, 3, 1),
+            (2, 5, 3, 4), (2, 5, 4, 1), (2, 5, 4, 3),
+            (3, 5, 4, 1), (3, 5, 4, 2), (1, 4, 2, 5, 3),
+            (1, 4, 3, 5, 2), (2, 4, 3, 5, 1)
+        }
+        # find all combinations of n numbers (length 1 - n)
+        # get combos and then permute?
+        vertices = {tuple(p)
+                    for i in range(4, 6)
+                    for c in Combinations(range(1, 6), i) if len(c) >= 4
+                    for p in Arrangements(c, len(c))}
+
+        for p in vertices:
+            print(p)
+        # test all permutations of length  5
+        return
 
 
 """class CandidatePathGeneratorTests(unittest.TestCase):
