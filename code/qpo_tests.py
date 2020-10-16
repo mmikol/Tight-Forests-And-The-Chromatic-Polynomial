@@ -51,9 +51,9 @@ class CandidatePathCheckerTests(unittest.TestCase):
     def test_is_candidate_path_2(self):
         POSSIBLE_CANDIDATE_PATHS = {(1, 4, 3, 2), (1, 4, 2, 3), (2, 4, 3, 1)}
         vertices = [i + 1 for i in range(4)]
-        for cp in Arrangements(vertices, len(vertices)):
-            self.assertTrue(is_candidate_path(cp) ==
-                            (cp in POSSIBLE_CANDIDATE_PATHS))
+        for p in Arrangements(vertices, len(vertices)):
+            self.assertTrue(is_candidate_path(p) ==
+                            (p in POSSIBLE_CANDIDATE_PATHS))
         return
 
     def test_is_candidate_path_3(self):
@@ -66,16 +66,16 @@ class CandidatePathCheckerTests(unittest.TestCase):
             (3, 5, 4, 1), (3, 5, 4, 2), (1, 4, 2, 5, 3),
             (1, 4, 3, 5, 2), (2, 4, 3, 5, 1)
         }
-        # find all combinations of n numbers (length 1 - n)
-        # get combos and then permute?
-        vertices = {tuple(p)
-                    for i in range(4, 6)
-                    for c in Combinations(range(1, 6), i) if len(c) >= 4
-                    for p in Arrangements(c, len(c))}
 
-        for p in vertices:
+        def generate_paths():
+            for i in range(4, 6):
+                for p in Arrangements([1, 2, 3, 4, 5], i):
+                    yield tuple(p)
+            return
+
+        for p in generate_paths():
             print(p)
-        # test all permutations of length  5
+
         return
 
 
