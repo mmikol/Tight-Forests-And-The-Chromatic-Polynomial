@@ -4,22 +4,30 @@ from sage.combinat.permutation import Arrangements
 from datetime import datetime
 
 
-def generate_path_traversals(G):
-    for c in combinations(G.vertices(), 2):
-        for p in G.all_paths(*c):
-            yield tuple(p)
-            yield tuple(reversed(p))
+def paths(G):
+    """Yields all paths in a given graph"""
+    for vertex_pairs in combinations(G.vertices(), 2):
+        for path in G.all_paths(*vertex_pairs):
+            yield tuple(path)
+            yield tuple(reversed(path))
     return
 
 
-def generate_candidate_paths(G):
+def candidate_paths(G):
     """
-    Returns all paths in a given graph of the form a - c - b - v_i - v_m = d 
+    Yields all paths in a given graph of the form a - c - b - v_i - v_m = d 
     such that a < b < c and v_m is the only v_i smaller than c.
     """
-    for p in generate_path_traversals(G):
-        if is_candidate_path(p):
-            yield tuple(p)
+    for traversal in paths(G):
+        if is_candidate_path(traversal):
+            yield tuple(traversal)
+    return
+
+
+def permuted_graphs(G):
+    for vertex_ordering in Arrangements(G.vertices(), G.order()):
+        G.relabel(vertex_ordering)
+        yield G
     return
 
 
@@ -59,22 +67,15 @@ def has_QPO(G, *, show_checks=False):
         print('--new graph--')
         G.show()
 
-    for cp in generate_candidate_paths(G):
-        a, c, b, d = *cp[:3], cp[-1]
+    for candidate_path in candidate_paths(G):
+        a, c, b, d = *candidate_path[:3], candidate_path[-1]
 
         if (not G.has_edge(a, d) and not (d < b and G.has_edge(c, d))):
             print('THIS IS NOT A QPO!')
-            print(f'failed path: {cp}')
+            print(f'failed path: {candidate_path}')
             return False
 
     return True
-
-
-def get_label_permutations(order):
-    labels = [i + 1 for i in range(order)]
-    for a in Arrangements(labels, order):
-        yield a
-    return
 
 
 def QPO_check(G, show_checks=False):
@@ -104,15 +105,13 @@ def find_QPO(G,
     QPO_count = 0
     QPO_found = False
 
-    for perm in get_label_permutations(G.order()):
-        G.relabel(perm)
-
-        if has_QPO(G, show_checks):
+    for graph in permuted_graphs(G):
+        if has_QPO(graph, show_checks):
             QPO_found = True
             QPO_count += 1
 
         if (show_QPOs):
-            G.show()
+            graph.show()
             print('--THIS IS A QPO!--\n')
 
         if stop_at_QPO:
