@@ -132,4 +132,9 @@ class CandidatePathGeneratorTests(unittest.TestCase):
         return
 
 
+class QPOCheckerTests(unittest.TestCase):
+    def test_qpo_checker_1(self):
+        pass
+
+
 unittest.main(argv=[''], verbosity=2, exit=False)

@@ -13,6 +13,10 @@ def generate_path_traversals(G):
 
 
 def generate_candidate_paths(G):
+    """
+    Returns all paths in a given graph of the form a - c - b - v_i - v_m = d 
+    such that a < b < c and v_m is the only v_i smaller than c.
+    """
     for p in generate_path_traversals(G):
         if is_candidate_path(p):
             yield tuple(p)
@@ -21,7 +25,7 @@ def generate_candidate_paths(G):
 
 def is_candidate_path(P):
     """
-    Determines if a path is of the form a - c - b - v_i - v_m = d 
+    Returns whether a path is of the form a - c - b - v_i - v_m = d 
     such that a < b < c and v_m is the only v_i smaller than c.
     """
 
@@ -44,7 +48,13 @@ def is_candidate_path(P):
     return True
 
 
-def has_QPO(G, show_checks=False):
+def has_QPO(G, *, show_checks=False):
+    """
+    Returns whether all candidate paths a-c-b-v_i-v_m=d 
+    satisfy the condition that either a-d is an edge 
+    or else d < b and c-d is an edge.
+    """
+
     if show_checks:
         print('--new graph--')
         G.show()
