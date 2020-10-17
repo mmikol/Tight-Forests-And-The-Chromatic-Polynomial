@@ -1,9 +1,8 @@
-import unittest
 import sage.all
-from sage.graphs.graph import Graph
-from sage.combinat.permutation import Arrangements
-from sage.combinat.combination import Combinations
+import unittest
 from qpo import *
+import qpo_test_helpers as TestHelpers
+from sage.graphs.graph import Graph
 
 
 class PathTraversalGeneratorTests(unittest.TestCase):
@@ -43,38 +42,37 @@ class PathTraversalGeneratorTests(unittest.TestCase):
 
 class CandidatePathCheckerTests(unittest.TestCase):
     def test_is_candidate_path_1(self):
+        with self.assertRaises(ValueError):
+            is_candidate_path((1, 2, 3, 1))
+        return
+
+    def test_is_candidate_path_2(self):
         self.assertFalse(is_candidate_path((1,)))
         self.assertFalse(is_candidate_path((1, 2)))
         self.assertFalse(is_candidate_path((1, 2, 3)))
         return
 
-    def test_is_candidate_path_2(self):
+    def test_is_candidate_path_3(self):
         POSSIBLE_CANDIDATE_PATHS = {(1, 4, 3, 2), (1, 4, 2, 3), (2, 4, 3, 1)}
-        vertices = [i + 1 for i in range(4)]
-        for p in Arrangements(vertices, len(vertices)):
+        for p in TestHelpers.generate_paths(vertex_labels=(1, 2, 3, 4), min_path_len=4, max_path_len=4):
+            p = tuple(p)
             self.assertTrue(is_candidate_path(p) ==
                             (p in POSSIBLE_CANDIDATE_PATHS))
         return
 
-    def test_is_candidate_path_3(self):
+    def test_is_candidate_path_4(self):
         POSSIBLE_CANDIDATE_PATHS = {
             (1, 4, 2, 3), (1, 4, 3, 2), (1, 5, 2, 3),
             (1, 5, 2, 4), (1, 5, 3, 2), (1, 5, 3, 4),
             (1, 5, 4, 2), (1, 5, 4, 3), (2, 4, 3, 1),
-            (2, 5, 1, 3), (2, 5, 1, 4), (2, 5, 3, 1),
-            (2, 5, 3, 4), (2, 5, 4, 1), (2, 5, 4, 3),
-            (3, 5, 4, 1), (3, 5, 4, 2), (1, 4, 2, 5, 3),
-            (1, 4, 3, 5, 2), (2, 4, 3, 5, 1)
+            (2, 5, 3, 1), (2, 5, 3, 4), (2, 5, 4, 1),
+            (2, 5, 4, 3), (3, 5, 4, 1), (3, 5, 4, 2),
+            (1, 4, 2, 5, 3), (1, 4, 3, 5, 2), (2, 4, 3, 5, 1)
         }
 
-        def generate_paths():
-            for i in range(4, 6):
-                for p in Arrangements([1, 2, 3, 4, 5], i):
-                    yield tuple(p)
-            return
-
-        for p in generate_paths():
-            print(p)
+        for p in TestHelpers.generate_paths((1, 2, 3, 4, 5), min_path_len=4, max_path_len=5):
+            self.assertTrue(is_candidate_path(p) ==
+                            (p in POSSIBLE_CANDIDATE_PATHS))
 
         return
 
