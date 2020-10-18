@@ -6,7 +6,7 @@ from datetime import datetime
 
 def paths(G):
     """Yields all paths in a given graph"""
-    for vertex_pair in combinations(G.vertices(), len(vertex_pair)):
+    for vertex_pair in combinations(G.vertices(), 2):
         for path in G.all_paths(*vertex_pair):
             yield tuple(path)
             yield tuple(reversed(path))
