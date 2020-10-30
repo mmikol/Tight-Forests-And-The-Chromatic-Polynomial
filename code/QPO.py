@@ -4,13 +4,13 @@ from sage.combinat.permutation import Arrangements
 from datetime import datetime
 
 
+# TODO: create a better algorithm
 def paths(G):
     """Yields all paths in a given graph"""
     for vertex_pair in combinations(G.vertices(), 2):
         for path in G.all_paths(*vertex_pair):
             yield tuple(path)
             yield tuple(reversed(path))
-    return
 
 
 def candidate_paths(G):
@@ -21,14 +21,12 @@ def candidate_paths(G):
     for traversal in paths(G):
         if is_candidate_path(traversal):
             yield tuple(traversal)
-    return
 
 
 def permuted_graphs(G):
     for vertex_ordering in Arrangements(G.vertices(), G.order()):
         G.relabel(vertex_ordering)
         yield G
-    return
 
 
 def is_candidate_path(P):
@@ -56,7 +54,7 @@ def is_candidate_path(P):
     return True
 
 
-def has_QPO(G, *, show_checks=False):
+def has_QPO(G, show_checks=False):
     """
     Returns whether all candidate paths a-c-b-v_i-v_m=d 
     satisfy the condition that either a-d is an edge 
@@ -90,12 +88,7 @@ def QPO_check(G, show_checks=False):
     return (f'has QPO: {False}')
 
 
-def find_QPO(G,
-             stop_at_QPO=False,
-             show_checks=False,
-             show_QPOs=False,
-             count_QPOs=False):
-
+def find_QPO(G, stop_at_QPO=False, show_checks=False, show_QPOs=False, count_QPOs=False):
     start_time = datetime.now()
 
     print(f'start time: {start_time}')

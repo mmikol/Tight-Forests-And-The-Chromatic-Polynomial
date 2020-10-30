@@ -6,12 +6,9 @@ def generate_path_sequences(vertex_labels, *, min_path_len=None, max_path_len=No
     for i in range(min_path_len, max_path_len + 1):
         for p in Arrangements(vertex_labels, i):
             yield tuple(p)
-    return
 
 
 def generate_graphs_with_permuted_labels(G):
     for permutation in Arrangements(G.vertices(), G.order()):
         G.relabel(permutation)
         yield G
-
-    return
