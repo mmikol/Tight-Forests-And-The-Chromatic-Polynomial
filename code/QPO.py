@@ -24,8 +24,13 @@ def candidate_paths(G):
             for neighbor in neighbors:
                 yield from _backtrack(path, neighbor, path_position + 1)
 
-    for vertex in G.vertex_iterator():
-        for neighbor in G.neighbor_iterator(vertex):
+    # Property: Two largest vertices never begin a candidate path
+
+    for vertex in G.vertices()[: G.order() - 1]:
+        # Property: Three smallest vertices never follow the first vertex in a candidate path
+        for neighbor in filter(
+                lambda v: G.order() > 3 and v > G.vertices()[2],
+                G.neighbors(vertex)):
             yield from _backtrack(
                 path=OrderedSet([vertex]),
                 current_vertex=neighbor,
