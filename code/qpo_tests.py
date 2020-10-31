@@ -58,10 +58,17 @@ class CandidatePathGeneratorTests(unittest.TestCase):
         self.assertTrue(all(path in candidate_paths(specimen)
                             for path in POSSIBLE_CANDIDATE_PATHS))
 
-    # add THEOREM EXAMPLE HERE
     def test_candidate_path_generator_9(self):
-        POSSIBLE_CANDIDATE_PATHS = {(3, 5, 4, 1), (2, 5, 3, 1)}
-        specimen = Graph({1: [2, 3, 4], 5: [2, 3, 4]})
+        POSSIBLE_CANDIDATE_PATHS = {(1, 4, 3, 2), (1, 7, 6, 5)}
+        specimen = Graph({1: [2, 4, 5, 7], 3: [2, 4], 6: [5, 7]})
+        self.assertTrue(all(path in POSSIBLE_CANDIDATE_PATHS
+                            for path in candidate_paths(specimen)))
+        self.assertTrue(all(path in candidate_paths(specimen)
+                            for path in POSSIBLE_CANDIDATE_PATHS))
+
+    def test_candidate_path_generator_9(self):
+        POSSIBLE_CANDIDATE_PATHS = {(1, 5, 3, 2), (2, 6, 4, 1)}
+        specimen = Graph({1: [2, 4, 5], 2: [3, 6], 3: [5], 4: [6]})
         self.assertTrue(all(path in POSSIBLE_CANDIDATE_PATHS
                             for path in candidate_paths(specimen)))
         self.assertTrue(all(path in candidate_paths(specimen)
