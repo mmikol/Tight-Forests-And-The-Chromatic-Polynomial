@@ -2,25 +2,46 @@ import sage.all
 from itertools import combinations
 from sage.combinat.permutation import Arrangements
 from datetime import datetime
+from orderedset import OrderedSet
 
 
 # TODO: create a better algorithm
-def paths(G):
-    """Yields all paths in a given graph"""
-    for vertex_pair in combinations(G.vertices(), 2):
-        for path in G.all_paths(*vertex_pair):
-            yield tuple(path)
-            yield tuple(reversed(path))
-
-
 def candidate_paths(G):
-    """
-    Yields all paths in a given graph of the form a - c - b - v_i - v_m = d 
-    such that a < b < c and v_m is the only v_i smaller than c.
-    """
-    for traversal in paths(G):
-        if is_candidate_path(traversal):
-            yield tuple(traversal)
+    """Yields all candidate paths in a given graph"""
+    def backtrack(P, paths, current_vertex, path_position):
+        neighbors = set(G.neighbors(current_vertex)) - P
+
+        if path_position >= 3 and current_vertex < P[1]:
+            P.add(current_vertex)
+            paths.add(tuple(P))
+            return
+
+        valid_recurse = (
+            (path_position == 1 and current_vertex > P[0]) or
+            (path_position == 2 and current_vertex > P[0] and current_vertex < P[1]) or
+            (path_position >= 3 and current_vertex > P[1])
+        )
+
+        if valid_recurse:
+            P.add(current_vertex)
+
+            for neighbor in neighbors:
+                backtrack(P, paths, neighbor, path_position + 1)
+
+        return
+
+    paths = set()
+    # Possible heuristics (since ordered, we know that paths can't begin with n largest)
+    for vertex in G.vertices():
+        # Possible heuristics (since ordered, we know that second vertex can't be with n smallest)
+        for neighbor in G.neighbor_iterator(vertex):
+            backtrack(
+                P=OrderedSet([vertex]),
+                paths=paths,
+                current_vertex=neighbor,
+                path_position=1)
+
+    return paths
 
 
 def permuted_graphs(G):
@@ -31,7 +52,7 @@ def permuted_graphs(G):
 
 def is_candidate_path(P):
     """
-    Returns whether a path is of the form a - c - b - v_i - v_m = d 
+    Returns whether a path is of the form a - c - b - v_i - v_m = d
     such that a < b < c and v_m is the only v_i smaller than c.
     """
 
@@ -56,8 +77,8 @@ def is_candidate_path(P):
 
 def has_QPO(G, show_checks=False):
     """
-    Returns whether all candidate paths a-c-b-v_i-v_m=d 
-    satisfy the condition that either a-d is an edge 
+    Returns whether all candidate paths a-c-b-v_i-v_m=d
+    satisfy the condition that either a-d is an edge
     or else d < b and c-d is an edge.
     """
 
@@ -69,8 +90,9 @@ def has_QPO(G, show_checks=False):
         a, c, b, d = *candidate_path[:3], candidate_path[-1]
 
         if (not G.has_edge(a, d) and not (d < b and G.has_edge(c, d))):
-            print('THIS IS NOT A QPO!')
-            print(f'failed path: {candidate_path}')
+            if show_checks:
+                print('THIS IS NOT A QPO!')
+                print(f'failed path: {candidate_path}')
             return False
 
     return True
