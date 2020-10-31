@@ -25,7 +25,6 @@ def candidate_paths(G):
                 yield from _backtrack(path, neighbor, path_position + 1)
 
     # Property: Two largest vertices never begin a candidate path
-
     for vertex in G.vertices()[: G.order() - 1]:
         # Property: Three smallest vertices never follow the first vertex in a candidate path
         for neighbor in filter(
