@@ -1,4 +1,4 @@
-import sage.all
+from sage.all import *
 from sage.combinat.permutation import Arrangements
 from datetime import datetime
 from orderedset import OrderedSet
@@ -56,7 +56,6 @@ def has_QPO(G, show_checks=False):
 
     for candidate_path in candidate_paths(G):
         a, c, b, d = *candidate_path[:3], candidate_path[-1]
-
         if (not G.has_edge(a, d) and not (d < b and G.has_edge(c, d))):
             if show_checks:
                 print('THIS IS NOT A QPO!')

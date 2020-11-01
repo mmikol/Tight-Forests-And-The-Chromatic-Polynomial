@@ -1,9 +1,8 @@
-import sage.all
-from sage.graphs.graph import Graph
+from sage.all import *
 from sage.combinat.permutation import Arrangements
 from qpo import *
 import unittest
-import qpo_test_helpers as TestHelpers
+from qpo_test_helpers import *
 
 
 class CandidatePathGeneratorTests(unittest.TestCase):
@@ -134,17 +133,28 @@ class QPOCheckerTests(unittest.TestCase):
         specimen = Graph({1: []})
         self.assertTrue(has_QPO(specimen))
 
-    def test_qpo_checker_3(self):
-        # 3-cycle
-        pass
+    def test_cyclic_graphs(self):
+        # Property: only cycle graphs with less than five vertices have a QPO
+        for i in range(3, 11):
+            specimen = graphs.CycleGraph(i)
+            for permutation in graph_permutations(specimen):
+                if i < 5:
+                    self.assertTrue(has_QPO(permutation))
+                else:
+                    self.assertFalse(has_QPO(permutation))
 
-    def test_qpo_checker_4(self):
-        # 4-cycle
-        pass
-
-    def test_qpo_checker_5(self):
-        # 5-cycle
-        pass
+    def test_complete_bipartite_graphs(self):
+        # Property: only K(m,n) graphs where m, n <= 3 have a QPO
+        for i in range(2, 6):
+            for j in range(2, 6):
+                specimen = graphs.CompleteBipartiteGraph(i, j)
+                if i >= 4 and j >= 4:
+                    self.assertFalse(has_QPO(specimen))
+                else:
+                    # Property: We must permute graph labels until a QPO is found
+                    for permutation in graph_permutations(specimen):
+                        if has_QPO(specimen):
+                            self.assertTrue(True)
 
     def test_qpo_checker_6(self):
         # bipartite
