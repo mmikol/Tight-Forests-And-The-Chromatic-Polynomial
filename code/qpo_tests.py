@@ -5,13 +5,9 @@ from qpo import *
 import unittest
 import qpo_test_helpers as TestHelpers
 
-# TODO make tests for all possible combinations of each graph
-# Add test to check for duplicates
-
 
 class CandidatePathGeneratorTests(unittest.TestCase):
     def test_no_duplicates(self):
-        # TODO finish this test and rename all methods
         def contains_duplicate_path(path_list):
             path_set = set(path_list)
             for path in path_list:
@@ -20,11 +16,20 @@ class CandidatePathGeneratorTests(unittest.TestCase):
                 else:
                     path_set.add(path)
             return False
-        specimen = Graph()
-        pass
+
+        vertices = [i + 1 for i in range(5)]
+        for a, b, c, d, e in Arrangements(vertices, len(vertices)):
+            # Randomly created graph
+            specimen = Graph({a: [b, c], b: [c], c: [d], e: [a, b, c, d]})
+            specimen_candidate_paths = candidate_paths(specimen)
+            self.assertFalse(contains_duplicate_path(specimen_candidate_paths))
 
     def test_empty_graph(self):
         specimen = Graph()
+        self.assertTrue(not list(candidate_paths(specimen)))
+
+    def test_single_vertex(self):
+        specimen = Graph({1: []})
         self.assertTrue(not list(candidate_paths(specimen)))
 
     def test_two_vertex_tree(self):
@@ -121,11 +126,11 @@ class CandidatePathGeneratorTests(unittest.TestCase):
 
 
 class QPOCheckerTests(unittest.TestCase):
-    def test_qpo_checker_1(self):
+    def test_empty_graph(self):
         specimen = Graph()
         self.assertTrue(has_QPO(specimen))
 
-    def test_qpo_checker_2(self):
+    def test_single_vertex_graph(self):
         specimen = Graph({1: []})
         self.assertTrue(has_QPO(specimen))
 
