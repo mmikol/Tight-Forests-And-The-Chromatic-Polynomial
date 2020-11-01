@@ -8,6 +8,7 @@ from orderedset import OrderedSet
 
 def candidate_paths(G):
     """Yields all candidate paths in a given graph"""
+
     def _backtrack(path, current_vertex, path_position):
         neighbors = set(G.neighbors(current_vertex)) - path
 
@@ -37,13 +38,17 @@ def candidate_paths(G):
                 path_position=1)
 
 
-def permuted_graphs(G):
+def labeled_graph_permutations(G):
+    """
+    Yields graphs with labels permuted according to a 
+    lexicographically ordered set of permutation patterns.
+    """
     for vertex_ordering in Arrangements(G.vertices(), G.order()):
         G.relabel(vertex_ordering)
         yield G
 
 
-def has_QPO(G, show_checks=False):
+def is_QPO(G, show_checks=False):
     """
     Returns whether all candidate paths a-c-b-v_i-v_m=d
     satisfy the condition that either a-d is an edge
@@ -51,25 +56,21 @@ def has_QPO(G, show_checks=False):
     """
 
     if show_checks:
-        print('--new graph--')
         G.show()
 
     for candidate_path in candidate_paths(G):
         a, c, b, d = *candidate_path[:3], candidate_path[-1]
         if (not G.has_edge(a, d) and not (d < b and G.has_edge(c, d))):
-            if show_checks:
-                print('THIS IS NOT A QPO!')
-                print(f'failed path: {candidate_path}')
-            return False
+            return False, candidate_path
 
-    return True
+    return True, None
 
 
 def QPO_check(G, show_checks=False):
     print('checking this labeling: ')
     G.show()
 
-    if has_QPO(G, show_checks):
+    if is_QPO(G, show_checks):
         print('\nQPO: ')
         G.show()
         return (f'has QPO: {True}')
@@ -87,8 +88,8 @@ def find_QPO(G, stop_at_QPO=False, show_checks=False, show_QPOs=False, count_QPO
     QPO_count = 0
     QPO_found = False
 
-    for graph in permuted_graphs(G):
-        if has_QPO(graph, show_checks):
+    for graph in labeled_graph_permutations(G):
+        if is_QPO(graph, show_checks):
             QPO_found = True
             QPO_count += 1
 

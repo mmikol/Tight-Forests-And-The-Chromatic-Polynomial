@@ -127,45 +127,50 @@ class CandidatePathGeneratorTests(unittest.TestCase):
 class QPOCheckerTests(unittest.TestCase):
     def test_empty_graph(self):
         specimen = Graph()
-        self.assertTrue(has_QPO(specimen))
+        qpo_found, failed_candidate_path = is_QPO(specimen)
+        self.assertTrue(qpo_found)
+        self.assertTrue(failed_candidate_path == None)
 
     def test_single_vertex_graph(self):
         specimen = Graph({1: []})
-        self.assertTrue(has_QPO(specimen))
+        qpo_found, failed_candidate_path = is_QPO(specimen)
+        self.assertTrue(qpo_found)
+        self.assertTrue(failed_candidate_path == None)
+
+    def test_complete_graphs(self):
+        for i in range(4, 11):
+            specimen = graphs.CompleteGraph(i)
+            qpo_found, failed_candidate_path = is_QPO(specimen)
+            self.assertTrue(qpo_found)
 
     def test_cyclic_graphs(self):
         # Property: only cycle graphs with less than five vertices have a QPO
-        for i in range(3, 11):
+        for i in range(3, 6):
             specimen = graphs.CycleGraph(i)
             for permutation in graph_permutations(specimen):
+                qpo_found, failed_candidate_path = is_QPO(specimen)
                 if i < 5:
-                    self.assertTrue(has_QPO(permutation))
+                    self.assertTrue(qpo_found)
                 else:
-                    self.assertFalse(has_QPO(permutation))
+                    self.assertFalse(qpo_found)
 
     def test_complete_bipartite_graphs(self):
         # Property: only K(m,n) graphs where m, n <= 3 have a QPO
-        for i in range(2, 6):
-            for j in range(2, 6):
+        for i in range(2, 5):
+            for j in range(2, 5):
                 specimen = graphs.CompleteBipartiteGraph(i, j)
                 if i >= 4 and j >= 4:
-                    self.assertFalse(has_QPO(specimen))
+                    qpo_found, failed_candidate_path = is_QPO(specimen)
+                    self.assertFalse(qpo_found)
                 else:
                     # Property: We must permute graph labels until a QPO is found
                     for permutation in graph_permutations(specimen):
-                        if has_QPO(specimen):
+                        qpo_found, failed_candidate_path = is_QPO(specimen)
+                        if qpo_found:
                             self.assertTrue(True)
 
     def test_qpo_checker_6(self):
         # bipartite
-        pass
-
-    def test_qpo_checker_7(self):
-        # complete bipartite
-        pass
-
-    def test_qpo_checker_8(self):
-        # complete
         pass
 
 
