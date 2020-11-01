@@ -13,8 +13,7 @@ def candidate_paths(G):
 
         # Bug: seems to continue on to find more vertices, different base case needed?
         if path_position >= 3 and current_vertex < path[1]:
-            path.add(current_vertex)
-            yield tuple(path)
+            yield tuple([*path, current_vertex])
             return
 
         if ((path_position == 1 and current_vertex > path[0]) or
@@ -25,6 +24,8 @@ def candidate_paths(G):
 
             for neighbor in neighbors:
                 yield from _backtrack(path, neighbor, path_position + 1)
+
+            path.remove(current_vertex)
 
     # Property: Two largest vertices never begin a candidate path
     for vertex in G.vertices()[: G.order() - 1]:

@@ -6,6 +6,7 @@ import unittest
 import qpo_test_helpers as TestHelpers
 
 
+# Add test to check for duplicates
 class CandidatePathGeneratorTests(unittest.TestCase):
     def test_candidate_path_generator_1(self):
         specimen = Graph()
@@ -42,6 +43,7 @@ class CandidatePathGeneratorTests(unittest.TestCase):
                 self.assertTrue(
                     all(cp in POSSIBLE_CANDIDATE_PATHS for cp in specimen_candidate_paths))
 
+    # Do both assert statements need to be necessarily true
     def test_candidate_path_generator_7(self):
         POSSIBLE_CANDIDATE_PATHS = {(2, 5, 3, 4), (1, 4, 3, 5, 2)}
         specimen = Graph({1: [4], 2: [1], 3: [5], 4: [3], 5: [2]})
@@ -65,31 +67,49 @@ class CandidatePathGeneratorTests(unittest.TestCase):
         specimen = Graph({1: [2, 4, 5, 7], 3: [2, 4], 6: [5, 7]})
         specimen_candidate_paths = candidate_paths(specimen)
         self.assertTrue(
-            all(path in POSSIBLE_CANDIDATE_PATHS for path in specimen_candidate_paths))
+            all(path in set(POSSIBLE_CANDIDATE_PATHS) for path in specimen_candidate_paths))
         self.assertTrue(
-            all(path in specimen_candidate_paths for path in POSSIBLE_CANDIDATE_PATHS))
+            all(path in set(specimen_candidate_paths) for path in POSSIBLE_CANDIDATE_PATHS))
 
     def test_candidate_path_generator_9(self):
         POSSIBLE_CANDIDATE_PATHS = {(1, 5, 3, 2), (2, 6, 4, 1)}
         specimen = Graph({1: [2, 4, 5], 2: [3, 6], 3: [5], 4: [6]})
         specimen_candidate_paths = candidate_paths(specimen)
         self.assertTrue(
-            all(path in POSSIBLE_CANDIDATE_PATHS for path in specimen_candidate_paths))
+            all(path in set(POSSIBLE_CANDIDATE_PATHS) for path in specimen_candidate_paths))
         self.assertTrue(
-            all(path in specimen_candidate_paths for path in POSSIBLE_CANDIDATE_PATHS))
+            all(path in set(specimen_candidate_paths) for path in POSSIBLE_CANDIDATE_PATHS))
 
     def test_candidate_path_generator_9(self):
         POSSIBLE_CANDIDATE_PATHS = {
-            (1, 10, 9, 8), (3, 7, 5, 2), (3, 7, 5, 8, 9, 4),
-            (3, 7, 5, 8, 9, 10, 1), (1, 10, 9, 8)}
-        specimen = Graph(
-            {1: [4, 10], 3: [7], 5: [2, 7, 8, 12], 9: [4, 8, 10], 11: [5, 12]})
+            (1, 10, 9, 4),
+            (1, 10, 9, 8),
+            (3, 7, 5, 2),
+            (3, 7, 5, 6),
+            (3, 7, 5, 11, 6),
+            (3, 7, 5, 8, 9, 4),
+            (3, 7, 5, 8, 9, 10, 1),
+            (4, 9, 8, 5)
+        }
+        specimen = Graph({
+            1: [4, 10],
+            2: [5],
+            3: [7],
+            4: [1, 9],
+            5: [2, 7, 8, 11, 6],
+            6: [5, 11],
+            7: [3, 5],
+            8: [5, 9],
+            9: [4, 8, 10],
+            10: [1, 9],
+            11: [5, 6]
+        })
         specimen_candidate_paths = candidate_paths(specimen)
         print(list(candidate_paths(specimen)))
         self.assertTrue(
-            all(path in POSSIBLE_CANDIDATE_PATHS for path in specimen_candidate_paths))
+            all(path in set(POSSIBLE_CANDIDATE_PATHS) for path in specimen_candidate_paths))
         self.assertTrue(
-            all(path in specimen_candidate_paths for path in POSSIBLE_CANDIDATE_PATHS))
+            all(path in set(specimen_candidate_paths) for path in POSSIBLE_CANDIDATE_PATHS))
 
 
 class QPOCheckerTests(unittest.TestCase):
