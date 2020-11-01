@@ -125,6 +125,12 @@ class CandidatePathGeneratorTests(unittest.TestCase):
 
 
 class QPOCheckerTests(unittest.TestCase):
+    """
+    Runs through tests of all graphs that currently have characterizations. In general,
+    characterizations for a 'QPO Graph' do not exist aside from some propositions 
+    implemented in these tests.
+    """
+
     def test_empty_graph(self):
         specimen = Graph()
         qpo_found, failed_candidate_path = is_QPO(specimen)
@@ -171,6 +177,10 @@ class QPOCheckerTests(unittest.TestCase):
 
     def test_qpo_checker_6(self):
         # bipartite
+        pass
+
+    def test_qpo_checker_7(self):
+        # trees
         pass
 
 
