@@ -8,36 +8,69 @@ import qpo_test_helpers as TestHelpers
 
 # Add test to check for duplicates
 class CandidatePathGeneratorTests(unittest.TestCase):
+    def test_no_duplicates(self):
+        # TODO finish this test and rename all methods
+        def contains_duplicate_path(path_list):
+            path_set = set(path_list)
+            for path in path_list:
+                if path in path_set:
+                    return True
+                else:
+                    path_set.add(path)
+            return False
+        specimen = Graph()
+        pass
+
     def test_candidate_path_generator_1(self):
         specimen = Graph()
         self.assertTrue(not list(candidate_paths(specimen)))
 
     def test_candidate_path_generator_2(self):
-        specimen = Graph({1: [2]})
+        specimen = Graph({
+            1: [2],
+            2: [1]
+        })
         self.assertTrue(not list(candidate_paths(specimen)))
 
     def test_candidate_path_generator_3(self):
-        specimen = Graph({1: [2], 2: [3]})
+        specimen = Graph({
+            1: [2],
+            2: [3],
+            3: [2]
+        })
         self.assertTrue(not list(candidate_paths(specimen)))
 
     def test_candidate_path_generator_4(self):
         EXPECTED = (1, 4, 2, 3)
-        specimen = Graph({1: [4], 2: [3], 3: [1], 4: [2]})
+        specimen = Graph({
+            1: [4],
+            2: [3],
+            3: [1],
+            4: [2]
+        })
         self.assertTrue(list(candidate_paths(specimen)) == [EXPECTED])
 
     def test_candidate_path_generator_5(self):
-        POSSIBLE_CANDIDATE_PATHS = {(1, 4, 3, 2), (1, 4, 2, 3), (2, 4, 3, 1)}
+        POSSIBLE_CANDIDATE_PATHS = {
+            (1, 4, 3, 2),
+            (1, 4, 2, 3),
+            (2, 4, 3, 1)
+        }
         vertex_labels = (1, 2, 3, 4)
         for a, b, c, d in Arrangements(vertex_labels, len(vertex_labels)):
-            specimen = Graph({a: [b], b: [c], c: [d]})
+            specimen = Graph({a: [b], b: [c], c: [d], d: [c]})
             for path in candidate_paths(specimen):
                 self.assertTrue(path in POSSIBLE_CANDIDATE_PATHS)
 
     def test_candidate_path_generator_6(self):
-        POSSIBLE_CANDIDATE_PATHS = {(1, 4, 3, 2), (1, 4, 2, 3), (2, 4, 3, 1)}
+        POSSIBLE_CANDIDATE_PATHS = {
+            (1, 4, 3, 2),
+            (1, 4, 2, 3),
+            (2, 4, 3, 1)
+        }
         vertices = [i + 1 for i in range(4)]
         for a, b, c, d in Arrangements(vertices, len(vertices)):
-            specimen = Graph({a: [b, c], b: [c], c: [d]})
+            specimen = Graph({a: [b, c], b: [c], c: [d], d: [c]})
             specimen_candidate_paths = list(candidate_paths(specimen))
             if specimen_candidate_paths:
                 self.assertTrue(
@@ -45,22 +78,40 @@ class CandidatePathGeneratorTests(unittest.TestCase):
 
     # Do both assert statements need to be necessarily true
     def test_candidate_path_generator_7(self):
-        POSSIBLE_CANDIDATE_PATHS = {(2, 5, 3, 4), (1, 4, 3, 5, 2)}
-        specimen = Graph({1: [4], 2: [1], 3: [5], 4: [3], 5: [2]})
+        POSSIBLE_CANDIDATE_PATHS = {
+            (2, 5, 3, 4),
+            (1, 4, 3, 5, 2)
+        }
+        specimen = Graph({
+            1: [4],
+            2: [1],
+            3: [5],
+            4: [3],
+            5: [2]
+        })
         specimen_candidate_paths = candidate_paths(specimen)
         self.assertTrue(
-            all(path in POSSIBLE_CANDIDATE_PATHS for path in specimen_candidate_paths))
+            all(path in set(POSSIBLE_CANDIDATE_PATHS) for path in specimen_candidate_paths))
         self.assertTrue(
-            all(path in specimen_candidate_paths for path in POSSIBLE_CANDIDATE_PATHS))
+            all(path in set(specimen_candidate_paths) for path in POSSIBLE_CANDIDATE_PATHS))
 
     def test_candidate_path_generator_8(self):
-        POSSIBLE_CANDIDATE_PATHS = {(3, 5, 4, 1), (2, 5, 3, 1)}
-        specimen = Graph({1: [2, 3, 4], 5: [2, 3, 4]})
+        POSSIBLE_CANDIDATE_PATHS = {
+            (3, 5, 4, 1),
+            (2, 5, 3, 1)
+        }
+        specimen = Graph({
+            1: [2, 3, 4],
+            2: [1, 5],
+            3: [1, 5],
+            4: [1, 5],
+            5: [2, 3, 4]
+        })
         specimen_candidate_paths = candidate_paths(specimen)
         self.assertTrue(
-            all(path in POSSIBLE_CANDIDATE_PATHS for path in specimen_candidate_paths))
+            all(path in set(POSSIBLE_CANDIDATE_PATHS) for path in specimen_candidate_paths))
         self.assertTrue(
-            all(path in specimen_candidate_paths for path in POSSIBLE_CANDIDATE_PATHS))
+            all(path in set(specimen_candidate_paths) for path in POSSIBLE_CANDIDATE_PATHS))
 
     def test_candidate_path_generator_9(self):
         POSSIBLE_CANDIDATE_PATHS = {(1, 4, 3, 2), (1, 7, 6, 5)}
