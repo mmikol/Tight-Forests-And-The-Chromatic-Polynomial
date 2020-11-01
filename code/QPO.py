@@ -11,9 +11,11 @@ def candidate_paths(G):
     def _backtrack(path, current_vertex, path_position):
         neighbors = set(G.neighbors(current_vertex)) - path
 
+        # Bug: seems to continue on to find more vertices, different base case needed?
         if path_position >= 3 and current_vertex < path[1]:
             path.add(current_vertex)
             yield tuple(path)
+            return
 
         if ((path_position == 1 and current_vertex > path[0]) or
             (path_position == 2 and current_vertex > path[0] and current_vertex < path[1]) or
