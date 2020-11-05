@@ -12,3 +12,6 @@ def graph_permutations(G):
     for permutation in Arrangements(G.vertices(), G.order()):
         G.relabel(permutation)
         yield G
+
+
+def is_candidate_path(P):
