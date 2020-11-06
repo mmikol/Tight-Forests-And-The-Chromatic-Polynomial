@@ -3,8 +3,24 @@ from sage.combinat.permutation import Arrangements
 from datetime import datetime
 from orderedset import OrderedSet
 
-# TODO This needs to really be cleaned up
+def last_possible_vertex(path, path_position, current_vertex):
+    # For a-c-b-...-v_i-...-v_m = d, d < c
+    return path_position >= 3 and current_vertex < path[1]
 
+def still_candidate_path(path, current_vertex, path_position):
+    # For a-c, a < c
+    if path_position == 1:
+        return current_vertex > path[0]
+
+    # For a-c-b, a < b < c
+    if path_position == 2:
+        return current_vertex > path[0] and current_vertex < path[1] 
+    
+    # For a-c-b-...-v_i-..., v_i > c
+    if path_position >= 3:
+        return current_vertex > path[1]
+    
+    return False
 
 def candidate_paths(G):
     """Yields all candidate paths in a given graph"""
@@ -12,18 +28,13 @@ def candidate_paths(G):
     def _backtrack(path, current_vertex, path_position):
         neighbors = set(G.neighbors(current_vertex)) - path
 
-        if path_position >= 3 and current_vertex < path[1]:
+        if last_possible_vertex(path, current_vertex, path_position):
             yield tuple([*path, current_vertex])
 
-        if ((path_position == 1 and current_vertex > path[0]) or
-            (path_position == 2 and current_vertex > path[0] and current_vertex < path[1]) or
-                (path_position >= 3 and current_vertex > path[1])):
-
+        if still_candidate_path(path, current_vertex, path_position):
             path.add(current_vertex)
-
             for neighbor in neighbors:
                 yield from _backtrack(path, neighbor, path_position + 1)
-
             path.remove(current_vertex)
 
     # Property: Two largest vertices never begin a candidate path
