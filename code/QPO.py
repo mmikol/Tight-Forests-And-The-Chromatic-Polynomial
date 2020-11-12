@@ -83,7 +83,7 @@ def QPO_check(G, show_checks=False):
     print('checking this labeling: ')
     G.show()
 
-    if is_QPO(G, show_checks):
+    if is_QPO(G, show_checks)[0]:
         print('\nQPO: ')
         G.show()
         return (f'has QPO: {True}')
@@ -102,16 +102,16 @@ def find_QPO(G, stop_at_QPO=False, show_checks=False, show_QPOs=False, count_QPO
     QPO_found = False
 
     for graph in labeled_graph_permutations(G):
-        if is_QPO(graph, show_checks):
+        if is_QPO(graph, show_checks)[0]:
             QPO_found = True
             QPO_count += 1
 
-        if (show_QPOs):
-            graph.show()
-            print('--THIS IS A QPO!--\n')
+            if show_QPOs:
+                graph.show()
+                print('--THIS IS A QPO!--\n')
 
-        if stop_at_QPO:
-            break
+            if stop_at_QPO:
+                break
 
     end_time = datetime.now()
 
