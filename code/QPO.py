@@ -91,10 +91,9 @@ def QPO_check(G, show_checks=False):
     return (f'has QPO: {False}')
 
 
-def find_QPO(G, visualize_input=False, stop_at_QPO=False, show_checks=False, show_QPOs=False, count_QPOs=False):
+def find_QPO(G, show_metadata=False, visualize_input=False, stop_at_QPO=False, show_checks=False, show_QPOs=False, count_QPOs=False):
     start_time = datetime.now()
 
-    print(f'start time: {start_time}')
     if visualize_input:
         print('checking a graph like this: ')
         G.show()
@@ -116,12 +115,13 @@ def find_QPO(G, visualize_input=False, stop_at_QPO=False, show_checks=False, sho
 
     end_time = datetime.now()
 
-    print(f'end time: {end_time}')
-    print(f'total time ran: {end_time - start_time}')
+    if show_metadata:
+        print(f'start time: {start_time}')
+        print(f'end time: {end_time}')
+        print(f'total time ran: {end_time - start_time}')
+        print(f'has QPO: {QPO_found}')
 
     if (count_QPOs):
         print(f'number of possible QPOs: {QPO_count}')
-
-    print(f'has QPO: {QPO_found}')
 
     return QPO_found
