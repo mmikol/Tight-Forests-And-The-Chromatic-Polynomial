@@ -3,9 +3,11 @@ from sage.combinat.permutation import Arrangements
 from datetime import datetime
 from orderedset import OrderedSet
 
+
 def last_possible_vertex(path, path_position, current_vertex):
     # For a-c-b-...-v_i-...-v_m = d, d < c
     return path_position >= 3 and current_vertex < path[1]
+
 
 def still_candidate_path(path, current_vertex, path_position):
     # For a-c, a < c
@@ -14,13 +16,16 @@ def still_candidate_path(path, current_vertex, path_position):
 
     # For a-c-b, a < b < c
     if path_position == 2:
-        return current_vertex > path[0] and current_vertex < path[1] 
-    
+        return current_vertex > path[0] and current_vertex < path[1]
+
     # For a-c-b-...-v_i-..., v_i > c
     if path_position >= 3:
         return current_vertex > path[1]
-    
+
     return False
+
+# In complete graph: 1 - 4 - 3 - 5 - 6 - 7 - ... - n - 2 (length = n)
+
 
 def candidate_paths(G):
     """Yields all candidate paths in a given graph"""
@@ -28,7 +33,7 @@ def candidate_paths(G):
     def _backtrack(path, current_vertex, path_position):
         neighbors = set(G.neighbors(current_vertex)) - path
 
-        if last_possible_vertex(path, current_vertex, path_position):
+        if last_possible_vertex(path, path_position, current_vertex):
             yield tuple([*path, current_vertex])
 
         if still_candidate_path(path, current_vertex, path_position):
@@ -40,13 +45,10 @@ def candidate_paths(G):
     # Property: Two largest vertices never begin a candidate path
     for vertex in G.vertices()[: G.order() - 1]:
         # Property: Three smallest vertices never follow the first vertex in a candidate path
-        for neighbor in filter(
-                lambda v: G.order() > 3 and v > G.vertices()[2],
-                G.neighbors(vertex)):
-            yield from _backtrack(
-                path=OrderedSet([vertex]),
-                current_vertex=neighbor,
-                path_position=1)
+        neighbors = filter(lambda v: G.order() > 3 and v >
+                           G.vertices()[2], G.neighbors(vertex))
+        for neighbor in neighbors:
+            yield from _backtrack(path=OrderedSet([vertex]), current_vertex=neighbor, path_position=1)
 
 
 def labeled_graph_permutations(G):

@@ -46,7 +46,8 @@ class CandidatePathGeneratorTests(unittest.TestCase):
         for a, b, c, d in Arrangements(vertex_labels, len(vertex_labels)):
             test_graph = Graph({a: [b], b: [c], c: [d], d: [c]})
             test_graph_candidate_paths = set(candidate_paths(test_graph))
-            # All found paths are candidate paths
+            self.assertTrue(
+                all(is_candidate_path(path) for path in test_graph_candidate_paths))
             self.assertTrue(
                 all(path in POSSIBLE_CANDIDATE_PATHS for path in test_graph_candidate_paths))
 
@@ -57,7 +58,8 @@ class CandidatePathGeneratorTests(unittest.TestCase):
             test_graph = Graph({a: [b, c], b: [c], c: [d]})
             test_graph_candidate_paths = set(candidate_paths(test_graph))
             if test_graph_candidate_paths:
-                # All found paths are candidate paths
+                self.assertTrue(
+                    all(is_candidate_path(path) for path in test_graph_candidate_paths))
                 self.assertTrue(
                     all(path in POSSIBLE_CANDIDATE_PATHS for path in test_graph_candidate_paths))
 
@@ -72,7 +74,8 @@ class CandidatePathGeneratorTests(unittest.TestCase):
         for a, b, c, d, e in Arrangements(vertices, len(vertices)):
             test_graph = Graph({a: [b, e], b: [c], c: [d], d: [e]})
             test_graph_candidate_paths = set(candidate_paths(test_graph))
-            # All found paths are candidate paths
+            self.assertTrue(
+                all(is_candidate_path(path) for path in test_graph_candidate_paths))
             self.assertTrue(
                 all(path in POSSIBLE_CANDIDATE_PATHS for path in test_graph_candidate_paths))
 
@@ -80,7 +83,8 @@ class CandidatePathGeneratorTests(unittest.TestCase):
         POSSIBLE_CANDIDATE_PATHS = {(3, 5, 4, 1), (2, 5, 3, 1), (2, 5, 4, 1)}
         test_graph = Graph({1: [2, 3, 4], 5: [2, 3, 4]})
         test_graph_candidate_paths = set(candidate_paths(test_graph))
-        # All found paths are candidate paths
+        self.assertTrue(
+            all(is_candidate_path(path) for path in test_graph_candidate_paths))
         self.assertTrue(
             all(path in POSSIBLE_CANDIDATE_PATHS for path in test_graph_candidate_paths))
         # All candidate paths found
@@ -91,7 +95,8 @@ class CandidatePathGeneratorTests(unittest.TestCase):
         POSSIBLE_CANDIDATE_PATHS = {(1, 4, 3, 2), (1, 7, 6, 5)}
         test_graph = Graph({1: [2, 4, 5, 7], 3: [2, 4], 6: [5, 7]})
         test_graph_candidate_paths = set(candidate_paths(test_graph))
-        # All found paths are candidate paths
+        self.assertTrue(
+            all(is_candidate_path(path) for path in test_graph_candidate_paths))
         self.assertTrue(
             all(path in POSSIBLE_CANDIDATE_PATHS for path in test_graph_candidate_paths))
         # All candidate paths found
@@ -102,7 +107,8 @@ class CandidatePathGeneratorTests(unittest.TestCase):
         POSSIBLE_CANDIDATE_PATHS = {(1, 5, 3, 2), (2, 6, 4, 1)}
         test_graph = Graph({1: [2, 4, 5], 2: [3, 6], 3: [5], 4: [6]})
         test_graph_candidate_paths = set(candidate_paths(test_graph))
-        # All found paths are candidate paths
+        self.assertTrue(
+            all(is_candidate_path(path) for path in test_graph_candidate_paths))
         self.assertTrue(
             all(path in POSSIBLE_CANDIDATE_PATHS for path in test_graph_candidate_paths))
         # All candidate paths found
@@ -111,12 +117,14 @@ class CandidatePathGeneratorTests(unittest.TestCase):
 
     def test_random_complex_graph(self):
         POSSIBLE_CANDIDATE_PATHS = {(1, 10, 9, 4), (1, 10, 9, 8), (3, 7, 5, 2),
-                                    (3, 7, 5, 6), (3, 7, 5, 11, 6), (3, 7, 5, 8, 9, 4),
+                                    (3, 7, 5, 6), (3, 7, 5, 11,
+                                                   6), (3, 7, 5, 8, 9, 4),
                                     (3, 7, 5, 8, 9, 10, 1), (4, 9, 8, 5)}
         test_graph = Graph({1: [4, 10], 5: [2, 7, 8, 11, 6],
                             7: [3], 9: [4, 8, 10], 11: [6]})
         test_graph_candidate_paths = set(candidate_paths(test_graph))
-        # All found paths are candidate paths
+        self.assertTrue(
+            all(is_candidate_path(path) for path in test_graph_candidate_paths))
         self.assertTrue(
             all(path in POSSIBLE_CANDIDATE_PATHS for path in test_graph_candidate_paths))
         # All candidate paths found
@@ -125,6 +133,7 @@ class CandidatePathGeneratorTests(unittest.TestCase):
 
     def test_random_complex_graph(self):
         pass
+
 
 class QPOCheckerTests(unittest.TestCase):
     """
