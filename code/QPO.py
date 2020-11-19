@@ -2,6 +2,7 @@ from sage.all import *
 from sage.combinat.permutation import Arrangements
 from datetime import datetime
 from orderedset import OrderedSet
+from sage.graphs.graph_coloring import number_of_n_colorings
 
 
 def last_possible_vertex(path, path_position, current_vertex):
@@ -24,13 +25,11 @@ def still_candidate_path(path, current_vertex, path_position):
 
     return False
 
-# In complete graph: 1 - 4 - 3 - 5 - 6 - 7 - ... - n - 2 (length = n)
-
 
 def candidate_paths(G):
     """Yields all candidate paths in a given graph"""
 
-    def _backtrack(path, current_vertex, path_position):
+    def search(path, current_vertex, path_position):
         neighbors = set(G.neighbors(current_vertex)) - path
 
         if last_possible_vertex(path, path_position, current_vertex):
@@ -39,16 +38,16 @@ def candidate_paths(G):
         if still_candidate_path(path, current_vertex, path_position):
             path.add(current_vertex)
             for neighbor in neighbors:
-                yield from _backtrack(path, neighbor, path_position + 1)
+                yield from search(path, neighbor, path_position + 1)
             path.remove(current_vertex)
 
     # Property: Two largest vertices never begin a candidate path
     for vertex in G.vertices()[: G.order() - 1]:
         # Property: Three smallest vertices never follow the first vertex in a candidate path
-        neighbors = filter(lambda v: G.order() > 3 and v >
-                           G.vertices()[2], G.neighbors(vertex))
+        neighbors = filter(lambda v: G.order() > 3 and v > G.vertices()[2],
+                           G.neighbors(vertex))
         for neighbor in neighbors:
-            yield from _backtrack(path=OrderedSet([vertex]), current_vertex=neighbor, path_position=1)
+            yield from search(path=OrderedSet([vertex]), current_vertex=neighbor, path_position=1)
 
 
 def labeled_graph_permutations(G):
@@ -61,22 +60,18 @@ def labeled_graph_permutations(G):
         yield G
 
 
-def is_QPO(G, show_checks=False):
+def is_QPO(G):
     """
     Returns whether all candidate paths a-c-b-v_i-v_m=d
     satisfy the condition that either a-d is an edge
     or else d < b and c-d is an edge.
     """
-
-    if show_checks:
-        G.show()
-
     for candidate_path in candidate_paths(G):
         a, c, b, d = *candidate_path[:3], candidate_path[-1]
         if (not G.has_edge(a, d) and not (d < b and G.has_edge(c, d))):
             return False, candidate_path
 
-    return True, None
+    return True, ()
 
 
 def QPO_check(G, show_checks=False):
@@ -91,37 +86,36 @@ def QPO_check(G, show_checks=False):
     return (f'has QPO: {False}')
 
 
-def find_QPO(G, show_metadata=False, visualize_input=False, stop_at_QPO=False, show_checks=False, show_QPOs=False, count_QPOs=False):
+def find_QPO(G, show_checks=False, stop_at_QPO=False, stop_at_non_QPO=False):
     start_time = datetime.now()
 
-    if visualize_input:
-        print('checking a graph like this: ')
-        G.show()
+    print(f'start time: {start_time}')
+    print('General Structure:')
 
-    QPO_count = 0
-    QPO_found = False
+    G.show()
 
+    QPO_count, QPO_found = (0, False)
     for graph in labeled_graph_permutations(G):
-        if is_QPO(graph, show_checks)[0]:
+        if is_QPO(graph)[0]:
             QPO_found = True
+
+            if show_checks:
+                graph.show()
+                print(f'is QPO: {QPO_found}')
+
+            if stop_at_QPO or stop_at_non_QPO:
+                break
+
             QPO_count += 1
 
-            if show_QPOs:
-                graph.show()
-                print('--THIS IS A QPO!--\n')
-
-            if stop_at_QPO:
-                break
+    if (not stop_at_QPO and not stop_at_non_QPO):
+        print(
+            f'{QPO_count} out of {number_of_n_colorings(G, G.order())} possible labelings are QPOs\n')
 
     end_time = datetime.now()
 
-    if show_metadata:
-        print(f'start time: {start_time}')
-        print(f'end time: {end_time}')
-        print(f'total time ran: {end_time - start_time}')
-        print(f'has QPO: {QPO_found}')
-
-    if (count_QPOs):
-        print(f'number of possible QPOs: {QPO_count}')
+    print(f'end time: {end_time}')
+    print(f'total time ran: {end_time - start_time}\n')
+    print(f'has QPO: {QPO_found}\n')
 
     return QPO_found
