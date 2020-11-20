@@ -2,7 +2,6 @@ from sage.all import *
 from sage.combinat.permutation import Arrangements
 from datetime import datetime
 from orderedset import OrderedSet
-from sage.graphs.graph_coloring import number_of_n_colorings
 
 
 def last_possible_vertex(path, path_position, current_vertex):
@@ -89,10 +88,10 @@ def QPO_check(G, show_checks=False):
 def find_QPO(G, show_checks=False, stop_at_QPO=False, stop_at_non_QPO=False):
     start_time = datetime.now()
 
-    print(f'start time: {start_time}')
-    print('General Structure:')
-
-    G.show()
+    if show_checks:
+        print(f'start time: {start_time}')
+        print('General Structure:')
+        G.show()
 
     QPO_count, QPO_found = (0, False)
     for graph in labeled_graph_permutations(G):
@@ -108,14 +107,15 @@ def find_QPO(G, show_checks=False, stop_at_QPO=False, stop_at_non_QPO=False):
 
             QPO_count += 1
 
-    if (not stop_at_QPO and not stop_at_non_QPO):
-        print(
-            f'{QPO_count} out of {number_of_n_colorings(G, G.order())} possible labelings are QPOs\n')
+    # if (not stop_at_QPO and not stop_at_non_QPO):
+    #     print(
+    #         f'{QPO_count} possible labelings are QPOs\n')
 
     end_time = datetime.now()
 
-    print(f'end time: {end_time}')
-    print(f'total time ran: {end_time - start_time}\n')
-    print(f'has QPO: {QPO_found}\n')
+    if show_checks:
+        print(f'end time: {end_time}')
+        print(f'total time ran: {end_time - start_time}\n')
+        print(f'has QPO: {QPO_found}\n')
 
     return QPO_found
