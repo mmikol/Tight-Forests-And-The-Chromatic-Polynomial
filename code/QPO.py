@@ -1,7 +1,7 @@
 from sage.all import *
 from sage.combinat.permutation import Arrangements
 from datetime import datetime
-from orderedset import OrderedSet
+from ordered_set import OrderedSet
 
 
 def last_possible_vertex(path, path_position, current_vertex):
@@ -59,7 +59,7 @@ def labeled_graph_permutations(G):
         yield G
 
 
-def is_QPO(G):
+def is_qpo(G):
     """
     Returns whether all candidate paths a-c-b-v_i-v_m=d
     satisfy the condition that either a-d is an edge
@@ -73,49 +73,49 @@ def is_QPO(G):
     return True, ()
 
 
-def QPO_check(G, show_checks=False):
-    print('checking this labeling: ')
-    G.show()
+# def qpo_check(G, show_checks=False):
+#     print('checking this labeling: ')
+#     G.show()
 
-    if is_QPO(G, show_checks)[0]:
-        print('\nQPO: ')
-        G.show()
-        return (f'has QPO: {True}')
+#     if is_QPO(G, show_checks)[0]:
+#         print('\nQPO: ')
+#         G.show()
+#         return (f'has QPO: {True}')
 
-    return (f'has QPO: {False}')
+#     return (f'has QPO: {False}')
 
 
-def find_QPO(G, show_checks=False, stop_at_QPO=False, stop_at_non_QPO=False):
-    start_time = datetime.now()
+# def find_qpo(G, show_checks=False, stop_at_QPO=False, stop_at_non_QPO=False):
+#     start_time = datetime.now()
 
-    if show_checks:
-        print(f'start time: {start_time}')
-        print('General Structure:')
-        G.show()
+#     if show_checks:
+#         print(f'start time: {start_time}')
+#         print('General Structure:')
+#         G.show()
 
-    QPO_count, QPO_found = (0, False)
-    for graph in labeled_graph_permutations(G):
-        if is_QPO(graph)[0]:
-            QPO_found = True
+#     QPO_count, QPO_found = (0, False)
+#     for graph in labeled_graph_permutations(G):
+#         if is_QPO(graph)[0]:
+#             QPO_found = True
 
-            if show_checks:
-                graph.show()
-                print(f'is QPO: {QPO_found}')
+#             if show_checks:
+#                 graph.show()
+#                 print(f'is QPO: {QPO_found}')
 
-            if stop_at_QPO or stop_at_non_QPO:
-                break
+#             if stop_at_QPO or stop_at_non_QPO:
+#                 break
 
-            QPO_count += 1
+#             QPO_count += 1
 
-    # if (not stop_at_QPO and not stop_at_non_QPO):
-    #     print(
-    #         f'{QPO_count} possible labelings are QPOs\n')
+#     # if (not stop_at_QPO and not stop_at_non_QPO):
+#     #     print(
+#     #         f'{QPO_count} possible labelings are QPOs\n')
 
-    end_time = datetime.now()
+#     end_time = datetime.now()
 
-    if show_checks:
-        print(f'end time: {end_time}')
-        print(f'total time ran: {end_time - start_time}\n')
-        print(f'has QPO: {QPO_found}\n')
+#     if show_checks:
+#         print(f'end time: {end_time}')
+#         print(f'total time ran: {end_time - start_time}\n')
+#         print(f'has QPO: {QPO_found}\n')
 
-    return QPO_found
+#     return QPO_found
