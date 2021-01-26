@@ -85,37 +85,37 @@ def is_qpo(G):
 #     return (f'has QPO: {False}')
 
 
-# def find_qpo(G, show_checks=False, stop_at_QPO=False, stop_at_non_QPO=False):
-#     start_time = datetime.now()
+def find_qpo(G, show_checks=False, stop_at_qpo=False, stop_at_non_qpo=False):
+    start_time = datetime.now()
 
-#     if show_checks:
-#         print(f'start time: {start_time}')
-#         print('General Structure:')
-#         G.show()
+    if show_checks:
+        print(f'start time: {start_time}')
+        print('General Structure:')
+        G.show()
 
-#     QPO_count, QPO_found = (0, False)
-#     for graph in labeled_graph_permutations(G):
-#         if is_QPO(graph)[0]:
-#             QPO_found = True
+    qpo_count, qpo_found = (0, False)
+    for graph in labeled_graph_permutations(G):
+        if is_qpo(graph)[0]:
+            qpo_found = True
 
-#             if show_checks:
-#                 graph.show()
-#                 print(f'is QPO: {QPO_found}')
+            if show_checks:
+                graph.show()
+                print(f'is QPO: {qpo_found}')
 
-#             if stop_at_QPO or stop_at_non_QPO:
-#                 break
+            if stop_at_qpo:
+                break
 
-#             QPO_count += 1
+            qpo_count += 1
+            
+        if not is_qpo(graph)[0] and stop_at_non_qpo:
+            graph.show()
+            return is_qpo(graph)
 
-#     # if (not stop_at_QPO and not stop_at_non_QPO):
-#     #     print(
-#     #         f'{QPO_count} possible labelings are QPOs\n')
+    end_time = datetime.now()
 
-#     end_time = datetime.now()
+    if show_checks:
+        print(f'end time: {end_time}')
+        print(f'total time ran: {end_time - start_time}\n')
+        print(f'has QPO: {qpo_found}\n')
 
-#     if show_checks:
-#         print(f'end time: {end_time}')
-#         print(f'total time ran: {end_time - start_time}\n')
-#         print(f'has QPO: {QPO_found}\n')
-
-#     return QPO_found
+    return qpo_found
