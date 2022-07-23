@@ -18,9 +18,11 @@ def candidate_paths(G, v):
         visited.add(path[-1])
         for n in filter(lambda n: n not in visited, G.neighbors(path[-1])):
             if len(path) >= 3 and n < path[1]:
-                yield (*path , n)
-            if valid_candidate_path(path , n):
-                stack.append([*path , n])
+                path.append(n)
+                yield path # yield as tuple?
+            if valid_candidate_path(path, n):
+                path.append(n)
+                stack.append(path)
                 
 # an iterative solution TODO: test and prove complexity/completeness
 def is_QPO(G):
