@@ -12,10 +12,11 @@ def valid_candidate_path(path, v):
     return False
 
 def candidate_paths(G, v): 
-    stack = [[v]]
+    stack, visited = [[v]], {v}
     while len(stack) > 0:
         path = stack.pop()
-        for n in filter(lambda n: n not in path, G.neighbors(path[-1])):
+        visited.add(path[-1])
+        for n in filter(lambda n: n not in visited, G.neighbors(path[-1])):
             if len(path) >= 3 and n < path[1]:
                 yield (*path , n)
             if valid_candidate_path(path , n):
